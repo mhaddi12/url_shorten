@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import TextField from "../components/TextField.jsx";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const LoginScreen = () => {
   // Individual state variables
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -57,7 +57,7 @@ const LoginScreen = () => {
         alert("Login successful");
         console.log(data.token);
       } else {
-        throw new Error(data.message || "Signup failed");
+        throw new Error(data.message || "SignIn failed");
       }
 
       console.log(response.status);
@@ -98,18 +98,14 @@ const LoginScreen = () => {
             type="submit"
             className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-all"
           >
-            Sign Up
+            Login
           </button>
         </form>
         <p className="text-gray-500 text-sm text-center mt-4">
           Don't have an account?{" "}
-          <a
-            href="#"
-            className="text-blue-500 hover:underline"
-            onClick={() => navigate("/register")}
-          >
+          <Link to="/register" className="text-blue-500 hover:underline">
             Sign Up
-          </a>
+          </Link>
         </p>
       </div>
     </div>
