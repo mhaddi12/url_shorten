@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import TextField from "../components/TextField.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginScreen = () => {
   // Individual state variables
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -55,6 +55,14 @@ const LoginScreen = () => {
       const data = await response.json();
       if (response.ok) {
         alert("Login successful");
+        localStorage.setItem("token", data.token);
+        if (
+          localStorage.getItem("token") &&
+          localStorage.getItem("token").trim() !== ""
+        ) {
+          navigate("/home");
+        }
+
         console.log(data.token);
       } else {
         throw new Error(data.message || "SignIn failed");
