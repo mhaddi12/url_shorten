@@ -2,30 +2,20 @@ import React, { useState } from "react";
 import TextField from "../components/TextField.jsx";
 import { Link, useNavigate } from "react-router-dom";
 
-const LoginScreen = () => {
-  // Individual state variables
+const LoginScreen = ({ setToken }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
+  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handlePasswordChange = (e) => setPassword(e.target.value);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     let hasError = false;
-
-    // Reset previous errors
-
     setEmailError("");
     setPasswordError("");
 
@@ -36,6 +26,7 @@ const LoginScreen = () => {
       setEmailError("Invalid email format");
       hasError = true;
     }
+
     if (password.length < 6) {
       setPasswordError("Password must be at least 6 characters");
       hasError = true;
@@ -46,34 +37,22 @@ const LoginScreen = () => {
     try {
       const response = await fetch("http://localhost:3000/api/user/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      if (response.ok) {
-        alert("Login successful");
-        localStorage.setItem("token", data.token);
-        if (
-          localStorage.getItem("token") &&
-          localStorage.getItem("token").trim() !== ""
-        ) {
-          navigate("/home");
-        }
-
-        console.log(data.token);
-      } else {
-        throw new Error(data.message || "SignIn failed");
+      if (!response.ok) {
+        throw new Error(data.message || "Sign-in failed");
       }
 
-      console.log(response.status);
+      localStorage.setItem("token", data.token);
+      setToken(data.token);
 
-      // Reset form on success
-
+      console.log("Login successful:", data.token);
       setEmail("");
       setPassword("");
+      navigate("/home");
     } catch (error) {
       console.error(error);
       alert(error.message || "Something went wrong. Please try again.");
